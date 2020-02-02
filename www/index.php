@@ -14,12 +14,9 @@
     <?php echo "<h1>Hi! I'm happy</h1>"; ?>
 
     <?php
+    $conn = mysqli_connect('db', 'user', 'test', "climberworld");
 
-    // Connexion et sélection de la base
-    $conn = mysqli_connect('db', 'user', 'test', "myDb");
-
-
-    $query = 'SELECT * From Person';
+    $query = 'SELECT * From User';
     $result = mysqli_query($conn, $query);
 
     echo '<table class="table table-striped">';

@@ -1,5 +1,9 @@
 # docker-lamp
 
+Guide I follow: https://github.com/jcavat/docker-lampc
+
+## Instructions
+
 Docker example with Apache, MySql 8.0, PhpMyAdmin and Php
 
 - You can use MariaDB 10.1 if you checkout to the tag `mariadb-10.1` - contribution made by [luca-vercelli](https://github.com/luca-vercelli)
