@@ -1,7 +1,23 @@
 version: "3.1"
 services:
+    webserver:
+        build:
+          context: ./app/
+          dockerfile: DockerFile
+        image: puckel/docker-airflow:latest
+        container_name: paxmile_airflow
+        volumes:
+          - ./dags/:/usr/local/airflow/dags
+        ports:
+          - 8080:8080
+        networks:
+          - backend
+        restart: always
+        depends_on:
+          - db
     www:
         build: .
+        container_name: paxmile_www
         ports: 
             - "8001:80"
         volumes:
@@ -9,9 +25,10 @@ services:
         links:
             - db
         networks:
-            - default
+            - backend
     db:
         image: mysql:8.0
+        container_name: paxmile_db
         ports: 
             - "3306:3306"
         command: --default-authentication-plugin=mysql_native_password
@@ -25,9 +42,10 @@ services:
             - ./conf:/etc/mysql/conf.d
             - ./persistent:/var/lib/mysql
         networks:
-            - default
+            - backend
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
+        container_name: paxmile_phpmyadmin
         links: 
             - db:db
         ports:
@@ -38,3 +56,7 @@ services:
             MYSQL_ROOT_PASSWORD: test 
 volumes:
     persistent:
+
+networks:
+    backend:
+        driver: "bridge"

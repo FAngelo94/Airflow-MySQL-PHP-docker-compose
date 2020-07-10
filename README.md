@@ -23,3 +23,7 @@ Run mysql client:
 - `docker-compose exec db mysql -u root -p` 
 
 Enjoy !
+
+
+## GUIDE
+https://medium.com/@rajat.mca.du.2015/airflow-and-mysql-with-docker-containers-80ed9c2bd340
