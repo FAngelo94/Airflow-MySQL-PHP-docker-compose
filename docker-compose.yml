@@ -1,62 +1,54 @@
-version: "3.1"
+version: "3"
 services:
     webserver:
         build:
-          context: ./app/
-          dockerfile: DockerFile
+            context: ./app/
+            dockerfile: Dockerfile
         image: puckel/docker-airflow:latest
         container_name: paxmile_airflow
         volumes:
-          - ./dags/:/usr/local/airflow/dags
+            - ./dags:/usr/local/airflow/dags
         ports:
-          - 8080:8080
-        networks:
-          - backend
-        restart: always
-        depends_on:
-          - db
-    www:
-        build: .
-        container_name: paxmile_www
-        ports: 
-            - "8001:80"
-        volumes:
-            - ./www:/var/www/html/
-        links:
-            - db
+            - 8080:8080
         networks:
             - backend
-    db:
-        image: mysql:8.0
-        container_name: paxmile_db
-        ports: 
-            - "3306:3306"
-        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        depends_on:
+            - mysqldb
+    mysqldb:
+        image: mysql:5.7
         environment:
-            MYSQL_DATABASE: climberworld
-            MYSQL_USER: user
-            MYSQL_PASSWORD: test
-            MYSQL_ROOT_PASSWORD: test 
-        volumes:
-            - ./dump:/docker-entrypoint-initdb.d
-            - ./conf:/etc/mysql/conf.d
-            - ./persistent:/var/lib/mysql
+            MYSQL_ROOT_PASSWORD: helloworld
+            MYSQL_DATABASE: testdb
+        container_name: paxmile_mysql
+        ports:
+            - 3306:3306
         networks:
             - backend
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         container_name: paxmile_phpmyadmin
         links: 
-            - db:db
+            - mysqldb:db
         ports:
             - 8000:80
         environment:
-            MYSQL_USER: user
-            MYSQL_PASSWORD: test
-            MYSQL_ROOT_PASSWORD: test 
-volumes:
-    persistent:
-
+            MYSQL_ROOT_PASSWORD: helloworld 
+        networks:
+            - backend
+    www:
+        build:
+            context: ./php/
+            dockerfile: Dockerfile
+        container_name: paxmile_www
+        ports: 
+            - "8001:80"
+        volumes:
+            - ./php/www:/var/www/html/
+        links:
+            - mysqldb:db
+        networks:
+            - backend
 networks:
-    backend:
-        driver: "bridge"
+  backend:
+    driver: "bridge"

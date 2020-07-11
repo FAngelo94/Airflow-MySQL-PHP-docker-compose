@@ -17,7 +17,7 @@ default_args = {
     'retries': 1,
     'retry_delay': timedelta(minutes=1),
 }
-dag = DAG('Helloworld', schedule_interval="@once", default_args=default_args)
+dag = DAG('Helloworld', schedule_interval=None, default_args=default_args)
 def get_data(**kwargs):
     url="https://jsonplaceholder.typicode.com/albums"
     resp = requests.get(url)
@@ -27,7 +27,7 @@ def get_data(**kwargs):
     return -1
 def save_db(**kwargs):
     query = 'select * from test_table'
-    mysql_hook = MySqlHook(mysql_conn_id='mysql_test_conn', schema='climberworld')
+    mysql_hook = MySqlHook(mysql_conn_id='mysql_test_conn', schema='testdb')
     connection = mysql_hook.get_conn()
     cursor = connection.cursor()
     cursor.execute(query)
@@ -36,7 +36,7 @@ def save_db(**kwargs):
         print("*********", result)
 def check_table_exists(**kwargs):
     query = 'select count(*) from information_schema.tables where table_name="test_table"'
-    mysql_hook = MySqlHook(mysql_conn_id='mysql_test_conn', schema='climberworld')
+    mysql_hook = MySqlHook(mysql_conn_id='mysql_test_conn', schema='testdb')
     connection = mysql_hook.get_conn()
     cursor = connection.cursor()
     cursor.execute(query)
@@ -45,7 +45,7 @@ def check_table_exists(**kwargs):
 def store_data(**kwargs):
     res = get_data()
     table_status = check_table_exists()
-    mysql_hook = MySqlHook(mysql_conn_id='mysql_test_conn', schema='climberworld')
+    mysql_hook = MySqlHook(mysql_conn_id='mysql_test_conn', schema='testdb')
     if table_status[0][0] == 0:
         print("----- table does not exists, creating it")    
         create_sql = 'create table test_table(col1 varchar(100), col2 varchar(100))'
