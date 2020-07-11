@@ -25,3 +25,7 @@ Then you can be sure that php server read db go to [http://localhost:8001/return
 To check Airflow you need to follow this guide to add the connections using Airflow dashboard: https://medium.com/@rajat.mca.du.2015/airflow-and-mysql-with-docker-containers-80ed9c2bd340
 
 After this you can trigger "return_user" dag and check in the log.
+
+## Deply on server
+
+Look this guide to understand how to use docker in remote server: https://www.docker.com/blog/how-to-deploy-on-remote-docker-hosts-with-docker-compose/
